@@ -1,0 +1,8 @@
+.pt-menu-item-green {
+    color: #12bb68;
+    font-weight: bold;
+}
+.pt-menu-item:not(.pt-disabled):hover, .pt-submenu > .pt-popover-open > .pt-menu-item:not(.pt-disabled) {
+    /*background: #eee;*/
+    /*color: black;*/
+}

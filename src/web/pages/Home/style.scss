@@ -1,0 +1,18 @@
+.Home {
+  //& .pt-card, .pt-tabs.pt-card {
+  //  padding: 0;
+  //}
+  margin: 20px;
+  & > .pt-tabs.pt-navbar{
+    padding: 10px;
+  }
+  table.pt-html-table  {
+    margin: 0 auto;
+    td {
+      vertical-align: middle;
+      & > .pt-checkbox {
+        display: inline;
+      }
+    }
+  }
+}

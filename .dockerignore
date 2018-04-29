@@ -1,0 +1,10 @@
+.git
+.gitignore
+.dockerignore
+dist
+Dockerfile
+.idea
+node_modules
+.env
+npm-debug.log
+package-lock.json
