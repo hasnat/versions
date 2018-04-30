@@ -8,22 +8,21 @@ interface to manage your docker-compose container releases
 # Develop
 ```
 docker build -t versions-dev ./scripts/docker-develop
-docker-run -p 3000:3000 -v /var/run/docker.sock:/var/run/docker.sock versions-dev npm run develop-api
-docker-run -p 3030:3030  versions-dev npm run develop
+docker run -it --rm -w /usr/local/src/app -v `pwd`:/usr/local/src/app -p 3000:3000 -v /var/run/docker.sock:/var/run/docker.sock versions-dev npm run develop-api
+docker run -it --rm -w /usr/local/src/app -v `pwd`:/usr/local/src/app -p 3030:3030 versions-dev npm run develop
 ```
 
 # Deploy
 ```
 docker build -t versions .
 docker build -t versions . && docker tag versions registry.example.com/versions &&  docker push registry.example.com/versions
-docker pull registry.example.com/versions && docker stop filebeat && docker-compose up -d
+docker pull registry.example.com/versions && docker-compose up -d
 ```
 
 
 ## docker-compose.yml
 ```
 version: '2'
-
 
 services:
 
@@ -36,7 +35,6 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - "HTTPS_METHOD=nohttps"
       - "EXCLUDE_CONTAINERS_BY_IMAGES=^sha256"
       - "REGISTRY_CONFIG_REGISTRY_EXAMPLE_COM=https://username:passsword@registry.example.com/v2"
       - "MAX_TAGS=30"
