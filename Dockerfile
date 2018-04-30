@@ -1,6 +1,6 @@
 FROM alpine
 
-RUN apk --no-cache add nodejs nodejs-npm curl git python make
+RUN apk --no-cache add nodejs nodejs-npm curl git python make g++
 
 WORKDIR /usr/local/project/app
 COPY ./package.json .

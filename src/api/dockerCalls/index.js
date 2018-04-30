@@ -127,16 +127,26 @@ export const getImageInfo = (imageRaw) => {
     }
 };
 const dockerHubImageAccessTokens = {};
-export const getDockerHubImageTag = async (image, tag) => {
+export const getDockerHubImageTag = async (image, tag, retry = true) => {
     const token = dockerHubImageAccessTokens[image] ? dockerHubImageAccessTokens[image] : (await request
         .get(`https://auth.docker.io/token?service=registry.docker.io&scope=repository:${image}:pull`)
     ).body.token;
+
     dockerHubImageAccessTokens[image] = token;
 
-    return await request
-        .head(`https://index.docker.io/v2/${image}/manifests/${tag}`)
-        .set('Accept', 'application/vnd.docker.distribution.manifest.v2+json')
-        .set('Authorization', `Bearer ${token}`);
+    try {
+        return await request
+            .head(`https://index.docker.io/v2/${image}/manifests/${tag}`)
+            .set('Accept', 'application/vnd.docker.distribution.manifest.v2+json')
+            .set('Authorization', `Bearer ${token}`);
+    } catch (e) {
+        // think token has expired, lets try again
+        if (retry) {
+            dockerHubImageAccessTokens[image] = false;
+            return await getDockerHubImageTag(image, tag, false);
+        }
+        throw e;
+    }
 };
 
 export const getTagHash = async (image, tag, registry = config.DOCKER_HUB_REGISTRY) => {
