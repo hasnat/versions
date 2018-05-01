@@ -21,7 +21,6 @@
     "@exponent/spawn-async": "^1.2.8",
     "@hasnat/redux-injector": "^0.1.0",
     "@hasnat/redux-modules": "^1.0.4",
-    "ansible-inventory-reader": "github:ben-bradley/ansible-inventory-reader",
     "babel-polyfill": "^6.26.0",
     "ben-bradley": "^1.0.2",
     "classnames": "^2.2.5",
