@@ -1,9 +1,11 @@
+require('dotenv').config();
 const path = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const config = require('./src/config');
 const __IS_DEV__ = process.env.NODE_ENV !== 'production';
+
 module.exports = {
     mode: 'development',
     entry: [
@@ -18,8 +20,8 @@ module.exports = {
                 use: ['babel-loader']
             },
             {
-                test: /\.s?css$/,
-                use: ['style-loader', 'css-loader', {loader: 'sass-loader', options: {sourceMap: true}}]
+                test: /\.(less|css)$/,
+                use: ['style-loader', 'css-loader', {loader: 'less-loader', options: {strictMath: true, noIeCompat: true}}]
             },
             {
                 test: /\.(gif|png|jpe?g|svg)$/,

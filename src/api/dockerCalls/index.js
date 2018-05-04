@@ -36,7 +36,7 @@ const getDockerCurlArguments = ({
 export const getAllImagesInfoOnEndpoint = async (endpoint) => {
 
         const command = getDockerCurlArguments(endpoint, '/images/json?all=1');
-        console.log('curl ' + command.join(' '));
+
         const resultPromise = spawnAsync('curl', command);
         let {
             pid,
@@ -111,7 +111,7 @@ export const getImageInfo = (imageRaw) => {
 
     let image = imageRaw.split(':')[0];
     const version = last(drop(imageRaw.split(':'))) || 'latest';
-    const registry = /\./.test(image) ? imageRaw.split('/')[0] : config.DOCKER_HUB_REGISTRY;
+    const registry = /\./.test(image.split('/')[0]) ? imageRaw.split('/')[0] : config.DOCKER_HUB_REGISTRY;
 
 
     if (registry === config.DOCKER_HUB_REGISTRY) {
@@ -166,22 +166,18 @@ export const getTagHash = async (image, tag, registry = config.DOCKER_HUB_REGIST
 export const getTags = async (registry, image) => {
     let tags = [];
     if (registry === config.DOCKER_HUB_REGISTRY) {
-        const response = await request.get(`${registry}/${image}/tags/?page_size=${config.MAX_TAGS}`);
-
-        tags = response.body.results.map(tag => tag.name)
-        console.log('tags', tags);
+        tags = (await request.get(`${registry}/${image}/tags/?page_size=${config.MAX_TAGS}`))
+            .body.results.map(tag => tag.name)
     } else {
-        tags = (await request.get(`${registry}/${image}/tags/list`)).body.tags
+        tags = (await request.get(`${registry}/${image}/tags/list`))
+            .body.tags
     }
 
     return {image, tags};
 };
 
 export const getImageTags = async (imageRaw) => {
-    console.log(imageRaw);
     const { registry, image } = getImageInfo(imageRaw);
-    console.log(getImageInfo(imageRaw))
-    console.log(`${registry}/v2/${image}/tags/list`)
     const response = await getTags(registry, image);
     response.tags = Object.assign({}, ...await Promise.all(
         response.tags.map(async tag => ({[tag]: await getTagHash(image, tag, registry)}))

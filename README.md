@@ -7,9 +7,9 @@ interface to manage your docker-compose container releases
 
 # Develop
 ```
-docker build -t versions-dev ./scripts/docker-develop
-docker run -it --rm -w /usr/local/src/app -v `pwd`:/usr/local/src/app -p 3000:3000 -v /var/run/docker.sock:/var/run/docker.sock versions-dev npm run develop-api
-docker run -it --rm -w /usr/local/src/app -v `pwd`:/usr/local/src/app -p 3030:3030 versions-dev npm run develop
+npm install
+npm run develop
+npm run develop-api
 ```
 
 # Deploy
@@ -31,7 +31,6 @@ services:
     volumes:
       - "${VOLUME_DIR}/versions/endpoints.json:/usr/local/project/app/endpoints.json"
       - "${VOLUME_DIR}/versions/certs:/usr/local/certs"
-      - "${VOLUME_DIR}/versions/dsp.certs:/usr/local/dsp.certs"
     ports:
       - "3000:3000"
     environment:

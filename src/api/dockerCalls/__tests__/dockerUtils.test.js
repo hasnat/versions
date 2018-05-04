@@ -44,11 +44,16 @@ describe('Check docker image variations', () => {
             {registry: 'registry.abc.com', image: 'abc123', version: '1.2.3'}
         );
 
+        expect(
+            getImageInfo('brianshepanek/apache-php-5.2')
+        ).toEqual(
+            {registry: config.DOCKER_HUB_REGISTRY, image: 'brianshepanek/apache-php-5.2', version: 'latest'}
+        );
 
         expect(
             getImageInfo('registry.example.com/abc123:1.2.3')
         ).toEqual(
-            {registry: config.REGISTRY_EXAMPLE_COM_REGISTRY, image: 'abc123', version: '1.2.3'}
+            {registry: config.REGISTRY_CONFIG_REGISTRY_EXAMPLE_COM, image: 'abc123', version: '1.2.3'}
         );
 
     });

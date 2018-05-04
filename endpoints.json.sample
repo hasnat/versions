@@ -1,62 +1,70 @@
-[
-  {
-    "Name": "local-01",
-    "URL": "http://localhost",
+{
+  "local": {
+    "local-01": {
+      "Name": "local-01",
+      "URL": "http://localhost"
+    }
   },
-  {
-    "Name": "test-01",
-    "URL": "tcp://127.0.0.1:2376",
-    "TLS": true,
-    "TLSSkipVerify": true,
-    "TLSCert": "/usr/local/certs/cert.pem",
-    "TLSKey": "/usr/local/certs/key.pem"
+  "test": {
+    "test-01": {
+      "Name": "test-01",
+      "URL": "tcp://127.0.0.1:2376",
+      "TLS": true,
+      "TLSSkipVerify": true,
+      "TLSCert": "/usr/local/certs/cert.pem",
+      "TLSKey": "/usr/local/certs/key.pem"
+    },
+    "test-02": {
+      "Name": "test-02",
+      "URL": "tcp://127.0.0.1:2376",
+      "TLS": true,
+      "TLSSkipVerify": true,
+      "TLSCert": "/usr/local/certs/cert.pem",
+      "TLSKey": "/usr/local/certs/key.pem"
+    }
   },
-  {
-    "Name": "test-02",
-    "URL": "tcp://127.0.0.1:2376",
-    "TLS": true,
-    "TLSSkipVerify": true,
-    "TLSCert": "/usr/local/certs/cert.pem",
-    "TLSKey": "/usr/local/certs/key.pem"
+  "uat": {
+    "uat-01": {
+      "Name": "uat-01",
+      "URL": "tcp://127.0.0.1:2376",
+      "TLS": true,
+      "TLSSkipVerify": true,
+      "TLSCert": "/usr/local/certs/cert.pem",
+      "TLSKey": "/usr/local/certs/key.pem"
+    },
+    "uat-02": {
+      "Name": "uat-02",
+      "URL": "tcp://127.0.0.1:2376",
+      "TLS": true,
+      "TLSSkipVerify": true,
+      "TLSCert": "/usr/local/certs/cert.pem",
+      "TLSKey": "/usr/local/certs/key.pem"
+    }
   },
-  {
-    "Name": "uat-01",
-    "URL": "tcp://127.0.0.1:2376",
-    "TLS": true,
-    "TLSSkipVerify": true,
-    "TLSCert": "/usr/local/certs/cert.pem",
-    "TLSKey": "/usr/local/certs/key.pem"
-  },
-  {
-    "Name": "uat-02",
-    "URL": "tcp://127.0.0.1:2376",
-    "TLS": true,
-    "TLSSkipVerify": true,
-    "TLSCert": "/usr/local/certs/cert.pem",
-    "TLSKey": "/usr/local/certs/key.pem"
-  },
-  {
-    "Name": "production-01",
-    "URL": "tcp://127.0.0.1:2376",
-    "TLS": true,
-    "TLSSkipVerify": true,
-    "TLSCert": "/usr/local/certs/cert.pem",
-    "TLSKey": "/usr/local/certs/key.pem"
-  },
-  {
-    "Name": "production-02",
-    "URL": "tcp://127.0.0.1:2376",
-    "TLS": true,
-    "TLSSkipVerify": true,
-    "TLSCert": "/usr/local/certs/cert.pem",
-    "TLSKey": "/usr/local/certs/key.pem"
-  },
-  {
-    "Name": "production-03",
-    "URL": "tcp://127.0.0.1:2376",
-    "TLS": true,
-    "TLSSkipVerify": true,
-    "TLSCert": "/usr/local/certs/cert.pem",
-    "TLSKey": "/usr/local/certs/key.pem"
+  "production": {
+    "production-01": {
+      "Name": "production-01",
+      "URL": "tcp://127.0.0.1:2376",
+      "TLS": true,
+      "TLSSkipVerify": true,
+      "TLSCert": "/usr/local/certs/cert.pem",
+      "TLSKey": "/usr/local/certs/key.pem"
+    },
+    "production-02": {
+      "Name": "production-02",
+      "URL": "tcp://127.0.0.1:2376",
+      "TLS": true,
+      "TLSSkipVerify": true,
+      "TLSCert": "/usr/local/certs/cert.pem",
+      "TLSKey": "/usr/local/certs/key.pem"
+    },
+    "production-03": {
+      "Name": "production-03",
+      "URL": "tcp://127.0.0.1:2376",
+      "TLS": true,
+      "TLSSkipVerify": true,
+      "TLSCert": "/usr/local/certs/cert.pem",
+      "TLSKey": "/usr/local/certs/key.pem"
+    }
   }
-]
+}

@@ -14,7 +14,7 @@ import {
 } from './utils';
 
 import { ControlGroup, Navbar, NavbarGroup, NavbarHeading, NavbarDivider, Alignment } from "@blueprintjs/core";
-import "./style.scss";
+import "./style.less";
 
 const ContainersComponent = (
     {

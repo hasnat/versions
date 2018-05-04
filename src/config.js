@@ -2,10 +2,9 @@ let config = {};
 if (typeof IS_CLIENT !== 'undefined') {
     config = {CLIENT_CONFIG: window.CLIENT_CONFIG}
 } else {
-    const dotenv = require('dotenv');
+    require('dotenv').config();
     const CLIENT_CONFIG_PATTERN = /^CLIENT_CONFIG_/;
     const REGISTRY_CONFIG_PATTERN = /^REGISTRY_CONFIG_/;
-    dotenv.config();
 
      config = {
         INCLUDE_CONTAINERS_BY_IMAGES: process.env.INCLUDE_CONTAINERS_BY_IMAGES || "", //"^registry\\.example\\.com",
