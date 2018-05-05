@@ -13,6 +13,11 @@ export const getAllGroups = () => {
     return omitDeep(require(__dirname + '/../../../endpoints.json'), ['']);
 };
 
-export const getEndpointInfo = (Name) => (
-    find(require(__dirname + '/../../../endpoints.json'), {Name})
-);
+export const getEndpointInfo = (Name) => {
+    const endpoints = require(__dirname + '/../../../endpoints.json');
+    let endpoint = false;
+    Object.keys(endpoints).map(group => {
+        endpoint = endpoints[group][Name] ? endpoints[group][Name] : endpoint;
+    });
+    return endpoint;
+};
