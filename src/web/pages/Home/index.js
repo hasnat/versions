@@ -123,10 +123,8 @@ const Home = (
     }
 ) => (
     <div className="Home pt-card">
-        {/*{JSON.stringify(groups)}*/}
         <Tabs
-            className="pt-navbar"
-            // vertical={true}
+            vertical={true}
             id="groupsTabs"
             onChange={f => setSelectedGroup(f)} selectedTabId={selectedGroup}
             >
@@ -139,7 +137,6 @@ const Home = (
                         title={group}
                         panel={(
                                 <Tabs
-                                    className="pt-card"
                                     id={"nodesTab" + group}
                                     vertical={true}
                                     onChange={f => setSelectedNodeAndLoadContainersIfRequired(f)}
@@ -178,7 +175,6 @@ const Home = (
                                         )
 
                                     }
-                                    <Tabs.Expander />
                                     <Button
                                         className="pt-minimal pt-fill"
                                         disabled={!Object.keys(groups[group]).length}
