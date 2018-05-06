@@ -148,7 +148,7 @@ export const transformations = {
             deployTo: {
                 ...state.deployTo,
                 selectedGroupNodes: payload === true ?
-                    Object.keys(state.groups[group]) : (payload === 'selected' ? [state.deployTo.node]: [])
+                    Object.keys(state.groups[state.deployTo.group]) : (payload === 'selected' ? [state.deployTo.node]: [])
             }
         }
     ),
