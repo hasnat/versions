@@ -38,7 +38,7 @@ const ContainersComponent = (
         deployDialogState, closeDialog,
         deploy, currentDeploymentParams, toggleNodeInDeployment,
         [reduxModule.name]: {groups, containers, images, loadingImages, loadingContainers, deployTo, deploying},
-        actions: {test, loadContainers, loadImages, showDeployDialog, toggleDeployToNode, cancelDeployTo, startDeploy}
+        actions: {test, loadContainers, loadImages, showDeployDialog, deployToNodeSelection, toggleDeployToNode, cancelDeployTo, startDeploy}
     }
 ) => (
     <div className="pt-card">
@@ -142,7 +142,11 @@ const ContainersComponent = (
         >
             <div className="pt-dialog-body">
                 {getImageNameWithoutVersion(deployTo.currentImage)}:{deployTo.newSelectedVersion}
-
+                <ButtonGroup large={false}>
+                    <Button icon="property" onClick={() => deployToNodeSelection('selected')}>Selected Node</Button>
+                    <Button icon="properties" onClick={() => deployToNodeSelection(true)}>Select All</Button>
+                    <Button icon="exclude-row" onClick={() => deployToNodeSelection(false)}>Select None</Button>
+                </ButtonGroup>
                 <Label
                     text="To"
                 >

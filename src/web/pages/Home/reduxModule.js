@@ -142,6 +142,16 @@ export const transformations = {
             deployTo: {...state.deployTo, selectedGroupNodes: xor(state.deployTo.selectedGroupNodes, [payload])}
         }
     ),
+    deployToNodeSelection: (state, {payload}) => (
+        {
+            ...state,
+            deployTo: {
+                ...state.deployTo,
+                selectedGroupNodes: payload === true ?
+                    Object.keys(state.groups[group]) : (payload === 'selected' ? [state.deployTo.node]: [])
+            }
+        }
+    ),
     cancelDeployTo: (state) => (
         {
             ...state,
