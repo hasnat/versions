@@ -8,6 +8,7 @@ import cors from 'cors';
 import config from '../config';
 import {getAllGroups, getEndpointInfo} from './endpointCalls';
 import {getAllContainers, getImageTags} from './dockerCalls';
+import {triggerCi} from './trigger';
 
 process.on('unhandledRejection', r => console.log('unhandledRejection', r.message));
 
@@ -46,6 +47,9 @@ app.get('/groups', (req, res) => res.json(getAllGroups()));
 
 app.get('/containers/:endpoint', (req, res) =>
     repondOrError(() => getAllContainers(getEndpointInfo(req.params.endpoint)), res, req)
+);
+app.post('/trigger', (req, res) =>
+    repondOrError(() => triggerCi(req.body), res, req)
 );
 
 app.get('/image/:namespace?/:image', (req, res) =>

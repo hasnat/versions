@@ -2,9 +2,22 @@ import React from "react";
 import {compose, lifecycle, withHandlers, withState} from "recompose";
 import reduxModuleComponent from '../../../redux/reduxModuleComponent';
 import reduxModule from './reduxModule';
-import {flatten, head, findKey} from 'lodash';
-import { Checkbox, Classes, Button, ButtonGroup, NonIdealState, Spinner, Tooltip, Position, Intent } from "@blueprintjs/core";
-import { Tab, Tabs } from "@blueprintjs/core";
+import {flatten, head, findKey, without} from 'lodash';
+import {
+    Checkbox,
+    Classes,
+    Button,
+    ButtonGroup,
+    NonIdealState,
+    Spinner,
+    Tooltip,
+    Position,
+    Intent,
+    Dialog,
+    Label
+} from "@blueprintjs/core";
+import {Tab, Tabs} from "@blueprintjs/core";
+import classNames from 'classnames';
 import {
     getVersionFromImageName,
     getImageNameWithoutVersion,
@@ -12,16 +25,20 @@ import {
     getImageAvailableTags,
     isLocalImageSameAsRegistry, showActualImageFromRegistry
 } from './utils';
+import config from '../../../config';
 
-import { ControlGroup, Navbar, NavbarGroup, NavbarHeading, NavbarDivider, Alignment } from "@blueprintjs/core";
+import {ControlGroup, Navbar, NavbarGroup, NavbarHeading, NavbarDivider, Alignment} from "@blueprintjs/core";
 import "./style.less";
 
 const ContainersComponent = (
     {
-        node,
+        node, group,
         selectedNode, setSelectedNode, setSelectedNodeAndLoadContainers,
-        [reduxModule.name]: {groups, containers, images, loadingImages, loadingContainers},
-        actions: {test, loadContainers, loadImages}
+        setSelectedImageVersion,
+        deployDialogState, closeDialog,
+        deploy, currentDeploymentParams, toggleNodeInDeployment,
+        [reduxModule.name]: {groups, containers, images, loadingImages, loadingContainers, deployTo, deploying},
+        actions: {test, loadContainers, loadImages, showDeployDialog, toggleDeployToNode, cancelDeployTo, startDeploy}
     }
 ) => (
     <div className="pt-card">
@@ -39,30 +56,32 @@ const ContainersComponent = (
                 description="No eligible containers found"
                 title="Nothing to display"
                 visual='info-sign'
-                />
+            />
         )}
         {containers[node] && !!containers[node].length && (<table className="pt-html-table">
             <thead>
             <tr>
                 <th>Container</th>
                 <th>Image</th>
-                <th>Current Version</th>
-                <th>Available Versions</th>
-                <th>Actions</th>
+                <th>Live</th>
+                <th>Equivalent</th>
+                <th>Available</th>
+                {/*<th>Actions</th>*/}
             </tr>
             </thead>
             <tbody>
             {containers[node].map((container, i) => (<tr key={i}>
                 <td>{head(container.Names)}</td>
                 <td>{container.Image}</td>
-                <td>
-                    {container.Image.split(':')[1] || 'latest'} - {showActualImageFromRegistry(images, container)}
-                    {/*{*/}
-                        {/*isVersionLatest(images, container.Image, false) ? ' - latest' : ''*/}
-                    {/*}*/}
-
+                <td>{container.Image.split(':')[1] || 'latest'}</td>
+                <td>{showActualImageFromRegistry(images, container)}
                     <Tooltip
-                        content={isLocalImageSameAsRegistry(images, container) ? 'Image is up-to date with registry' : 'Container image does not match as the same tag on registry, typically outdated version.'}
+                        content={
+                            isLocalImageSameAsRegistry(images, container) ?
+                                'Image is up-to date with registry'
+                                :
+                                'Container image does not match as the same tag on registry, typically outdated version.'
+                        }
                         position={Position.TOP}
                     >
                         <Button
@@ -76,42 +95,115 @@ const ContainersComponent = (
                 </td>
                 <td>
 
-                        <ControlGroup>
-                            <div className="pt-select pt-minimal">
-                        <select>
-                            {Object.keys(getImageAvailableTags(images, container.Image)).map((tag , i) => (
-                                <option key={i} value={tag} selected={getVersionFromImageName(container.Image) === tag}>
-                                    {tag}
-                                    {/*{isVersionLatest(images, container.Image, tag) ? ' - latest' : ''}*/}
+                    <ControlGroup>
+                        <div className="pt-select pt-minimal">
+                            <select
+                                onChange={(e) => setSelectedImageVersion(group, node, head(container.Names), container.Image, e.target.value)}
+                            >
+                                <option value="-">-</option>
+                                {Object.keys(getImageAvailableTags(images, container.Image)).map((tag, i) => (
+                                    <option key={i} value={tag}>
+                                        {tag}
+                                        {getVersionFromImageName(container.Image) === tag ? '*' : false}
+                                        {/*{isVersionLatest(images, container.Image, tag) ? ' - latest' : ''}*/}
 
-                                </option>
-                            ))}
-                        </select>
-                            </div>
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                         <Button
                             icon="refresh"
                             className="pt-minimal"
                             loading={loadingImages[getImageNameWithoutVersion(container.Image)]}
                             onClick={() => loadImages(container.Image)}
                         />
-                        </ControlGroup>
+                    </ControlGroup>
 
                 </td>
-                <td>
-                    <ButtonGroup>
+                {/*<td>*/}
+                    {/*<ButtonGroup>*/}
 
-                        <Button icon="outdated" or="updated" className="pt-minimal" />
+                        {/*<Button icon="play" or="updated" className="pt-minimal"*/}
+                                {/*onClick={*/}
+                                    {/*// () => showDeployWindow(group, container.Image, version)*/}
+                                    {/*() => setDeployDialogState(true)*/}
+                                {/*}/>*/}
 
-                        <Button icon="add" className="pt-minimal" />
-                    </ButtonGroup>
-                </td>
+                    {/*</ButtonGroup>*/}
+                {/*</td>*/}
             </tr>))}
             </tbody>
         </table>)}
+        <Dialog
+            icon="play"
+            isOpen={deployDialogState}
+            onClose={closeDialog}
+            title="Deploy"
+        >
+            <div className="pt-dialog-body">
+                {getImageNameWithoutVersion(deployTo.currentImage)}:{deployTo.newSelectedVersion}
+
+                <Label
+                    text="To"
+                >
+                    {Object.keys(groups[group]).map(node =>
+                        <Checkbox
+                            key={node}
+                            checked={
+                                ((deployTo.selectedGroupNodes || []).indexOf(node) > -1)
+                            }
+                            label={node}
+                            onChange={() => toggleDeployToNode(node)}
+                        />
+                    )}
+
+                </Label>
+
+            </div>
+            <div className="pt-dialog-footer">
+                <div className="pt-dialog-footer-actions">
+                    <Button
+                        text="Cancel"
+                        onClick={closeDialog}
+                    />
+                    <Button
+                        intent={Intent.PRIMARY}
+                        onClick={startDeploy}
+                        loading={deploying}
+                        text="Deploy"
+                    />
+                </div>
+            </div>
+        </Dialog>
     </div>
 );
-const Containers =  compose(
+const Containers = compose(
+    withState('deployDialogState', 'setDeployDialogState', false),
+
     reduxModuleComponent(reduxModule),
+    withHandlers({
+        setSelectedImageVersion: (
+            {
+                setDeployDialogState, setCurrentDeploymentParams, [reduxModule.name]: {groups},
+                actions: {test, loadContainers, loadImages, setDeployToParams, toggleDeployToNode, cancelDeployTo}
+            }
+        ) => (group, node, containerName, currentImage, newSelectedVersion) => {
+
+            setDeployToParams({group, node, containerName, currentImage, newSelectedVersion});
+            setDeployDialogState(true);
+
+            // debugger;
+        },
+        closeDialog: (
+            {
+                setDeployDialogState, setCurrentDeploymentParams, [reduxModule.name]: {groups},
+                actions: {test, loadContainers, loadImages, showDeployDialog, toggleDeployToNode, cancelDeployTo}
+            }
+        ) => () => {
+            cancelDeployTo();
+            setDeployDialogState(false);
+        }
+    })
 )(ContainersComponent);
 
 const Home = (
@@ -119,7 +211,7 @@ const Home = (
         selectedGroup, setSelectedGroup,
         selectedNode, setSelectedNode, setSelectedNodeAndLoadContainersIfRequired, loadAllNodesContainers,
         [reduxModule.name]: {groups, containers, images, loadingImages, loadingContainers},
-        actions: {test, loadContainers, loadImages }
+        actions: {test, loadContainers, loadImages}
     }
 ) => (
     <div className="Home pt-card">
@@ -127,7 +219,7 @@ const Home = (
             vertical={true}
             id="groupsTabs"
             onChange={f => setSelectedGroup(f)} selectedTabId={selectedGroup}
-            >
+        >
             {Object.keys(groups)
                 .map(group =>
                     (<Tab
@@ -136,53 +228,53 @@ const Home = (
                         key={group}
                         title={group}
                         panel={(
-                                <Tabs
-                                    id={"nodesTab" + group}
-                                    vertical={true}
-                                    onChange={f => setSelectedNodeAndLoadContainersIfRequired(f)}
-                                    selectedTabId={selectedNode}
-                                >
+                            <Tabs
+                                id={"nodesTab" + group}
+                                vertical={true}
+                                onChange={f => setSelectedNodeAndLoadContainersIfRequired(f)}
+                                selectedTabId={selectedNode}
+                            >
 
-                                    {Object.keys(groups[group])
-                                        .map(node =>
-                                            (<Tab
-                                                id={node}
-                                                key={node}
-                                                title={
-                                                    <ButtonGroup large={false} fill={true}>
-                                                        <Button
+                                {Object.keys(groups[group])
+                                    .map(node =>
+                                        (<Tab
+                                            id={node}
+                                            key={node}
+                                            title={
+                                                <ButtonGroup large={false} fill={true}>
+                                                    <Button
 
-                                                            icon={containers[node] && !!containers[node].length ? 'full-circle' : 'ring'}
-                                                            // text={node}
-                                                            className="pt-minimal"
-                                                            loading={loadingContainers[node]}
-                                                            onClick={() => loadContainers(node)}
-                                                        />
-                                                        <Button
-                                                            rightIcon="chevron-right"
+                                                        icon={containers[node] && !!containers[node].length ? 'full-circle' : 'ring'}
+                                                        // text={node}
+                                                        className="pt-minimal"
+                                                        loading={loadingContainers[node]}
+                                                        onClick={() => loadContainers(node)}
+                                                    />
+                                                    <Button
+                                                        rightIcon="chevron-right"
 
-                                                            text={node}
-                                                            className="pt-minimal pt-fill"
-                                                            disabled={loadingContainers[node]}
-                                                            // onClick={() => setSelectedNodeAndLoadContainersIfRequired(node)}
-                                                        />
-                                                    </ButtonGroup>
-                                                }
-                                                panel={(
-                                                    <Containers node={node}/>
-                                                )}
-                                            />)
-                                        )
+                                                        text={node}
+                                                        className="pt-minimal pt-fill"
+                                                        disabled={loadingContainers[node]}
+                                                        // onClick={() => setSelectedNodeAndLoadContainersIfRequired(node)}
+                                                    />
+                                                </ButtonGroup>
+                                            }
+                                            panel={(
+                                                <Containers node={node} group={group}/>
+                                            )}
+                                        />)
+                                    )
 
-                                    }
-                                    <Button
-                                        className="pt-minimal pt-fill"
-                                        disabled={!Object.keys(groups[group]).length}
-                                        text="Load All"
-                                        onClick={() => loadAllNodesContainers(group)}
-                                    />
+                                }
+                                <Button
+                                    className="pt-minimal pt-fill"
+                                    disabled={!Object.keys(groups[group]).length}
+                                    text="Load All"
+                                    onClick={() => loadAllNodesContainers(group)}
+                                />
 
-                                </Tabs>
+                            </Tabs>
 
                         )}
                     />)

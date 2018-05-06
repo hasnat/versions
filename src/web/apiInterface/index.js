@@ -16,4 +16,4 @@ export const getContainers = async (node) => (await request.get(API_HOST + '/con
 export const getImageTags = async (image) => (await request.get(API_HOST + '/image/' + image).use(noCache)).body;
 
 
-
+export const triggerCiClient = async (body) => (await request.post(API_HOST + '/trigger').use(noCache).send(body));

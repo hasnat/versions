@@ -1,7 +1,8 @@
 import {loop, Effects as Ef, liftState} from 'redux-loop';
 import Immutable from 'seamless-immutable';
-import { getGroups, getContainers, getImageTags } from '../../apiInterface'
+import { getGroups, getContainers, getImageTags, triggerCiClient } from '../../apiInterface'
 import { Intent } from "@blueprintjs/core";
+import { xor } from "lodash";
 import { createReduxModule } from '../../../redux/reduxModuleComponent';
 import messageToaster from '../../components/messageToaster';
 import {getImageNameWithoutVersion, getImageAvailableTags} from './utils';
@@ -15,12 +16,23 @@ export const initialState = Immutable({
     errorContainers: {},
     images: {},
     loadingImages: {},
-    errorImages: {}
+    errorImages: {},
+    deployTo: false,
+    deploying: false,
+    deployed: []
 });
 const toastError = (error) => Ef.call(() => {
     messageToaster().show({
         intent: Intent.DANGER,
         message: error
+    });
+    return Ef.none();
+});
+
+const toastSuccess = (message) => Ef.call(() => {
+    messageToaster().show({
+        intent: Intent.SUCCESS,
+        message
     });
     return Ef.none();
 });
@@ -118,7 +130,57 @@ export const transformations = {
 
 
 
+    setDeployToParams: (state, {payload: {group, node, containerName, currentImage, newSelectedVersion}}) => (
+        {
+            ...state,
+            deployTo: {group, node, containerName, currentImage, newSelectedVersion, selectedGroupNodes: Object.keys(state.groups[group])}
+        }
+    ),
+    toggleDeployToNode: (state, {payload}) => (
+        {
+            ...state,
+            deployTo: {...state.deployTo, selectedGroupNodes: xor(state.deployTo.selectedGroupNodes, [payload])}
+        }
+    ),
+    cancelDeployTo: (state) => (
+        {
+            ...state,
+            deployTo: false
+        }
+    ),
 
+
+
+    startDeploy: (state, {meta: {thisReduxModule}}) => loop(
+        {
+            ...state,
+            deploying: state.deployTo
+        },
+        Ef.promise(async () => {
+                try {
+                    const data = await triggerCiClient(state.deployTo);
+                    return thisReduxModule.actions.deployInitiated(data)
+                } catch (e) {
+                    return thisReduxModule.actions.deployError(error)
+                }
+            }
+        )
+    ),
+    deployInitiated: (state, {payload}) => loop(
+        {
+            ...state,
+            deployed: [state.deploying],
+            deploying: false
+        },
+        toastSuccess('Deployed' + payload)
+    ),
+    deployError: (state, {payload}) => loop(
+        {
+            ...state,
+            deploying: false
+        },
+        toastError(payload)
+    ),
 
 
 

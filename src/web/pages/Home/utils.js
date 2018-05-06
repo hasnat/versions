@@ -11,8 +11,8 @@ export const isVersionLatest = (images, imageNameRaw, tag = false) => {
     }
     return imageTags[tag] && imageTags[tag] === imageTags['latest'];
 };
-export const getImageNameWithoutVersion = (imageNameRaw) => imageNameRaw.split(':')[0];
-export const getVersionFromImageName = (imageNameRaw) => imageNameRaw.split(':')[1] || 'latest';
+export const getImageNameWithoutVersion = (imageNameRaw = '') => imageNameRaw.split(':')[0];
+export const getVersionFromImageName = (imageNameRaw = '') => imageNameRaw.split(':')[1] || 'latest';
 
 export const isLocalImageSameAsRegistry = (images, container) => {
     // debugger;
