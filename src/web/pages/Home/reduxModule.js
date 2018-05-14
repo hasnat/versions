@@ -171,7 +171,7 @@ export const transformations = {
                     const data = await triggerCiClient(state.deployTo);
                     return thisReduxModule.actions.deployInitiated(data)
                 } catch (e) {
-                    return thisReduxModule.actions.deployError(error)
+                    return thisReduxModule.actions.deployError(e)
                 }
             }
         )

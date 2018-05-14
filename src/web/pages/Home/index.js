@@ -98,9 +98,10 @@ const ContainersComponent = (
                     <ControlGroup>
                         <div className="pt-select pt-minimal">
                             <select
+                                value=""
                                 onChange={(e) => setSelectedImageVersion(group, node, head(container.Names), container.Image, e.target.value)}
                             >
-                                <option value="-">-</option>
+                                <option value="-">🚀</option>
                                 {Object.keys(getImageAvailableTags(images, container.Image)).map((tag, i) => (
                                     <option key={i} value={tag}>
                                         {tag}
@@ -141,15 +142,13 @@ const ContainersComponent = (
             title="Deploy"
         >
             <div className="pt-dialog-body">
-                {getImageNameWithoutVersion(deployTo.currentImage)}:{deployTo.newSelectedVersion}
+                <h5>{getImageNameWithoutVersion(deployTo.currentImage)}:{deployTo.newSelectedVersion}</h5>
                 <ButtonGroup large={false}>
                     <Button icon="property" onClick={() => deployToNodeSelection('selected')}>Selected Node</Button>
                     <Button icon="properties" onClick={() => deployToNodeSelection(true)}>Select All</Button>
                     <Button icon="exclude-row" onClick={() => deployToNodeSelection(false)}>Select None</Button>
                 </ButtonGroup>
-                <Label
-                    text="To"
-                >
+                <div className="deploy-nodes-container">
                     {Object.keys(groups[group]).map(node =>
                         <Checkbox
                             key={node}
@@ -160,9 +159,7 @@ const ContainersComponent = (
                             onChange={() => toggleDeployToNode(node)}
                         />
                     )}
-
-                </Label>
-
+                </div>
             </div>
             <div className="pt-dialog-footer">
                 <div className="pt-dialog-footer-actions">
