@@ -15,6 +15,7 @@ process.on('unhandledRejection', r => console.log('unhandledRejection', r.messag
 const app = express();
 app.use(helmet());
 app.use(cors());
+app.use(express.json());
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -28,7 +29,7 @@ const repondOrError = async (method, res, req) => {
     try {
         res.json(await method());
     } catch (e) {
-        console.log('Express-ERROR', req.baseUrl, e.message);
+        console.log('Express-ERROR', req.baseUrl, e.message, e);
         res.status(e.status || 500).send(e.message)
     }
 };

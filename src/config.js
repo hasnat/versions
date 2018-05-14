@@ -7,6 +7,7 @@ if (typeof IS_CLIENT !== 'undefined') {
     const REGISTRY_CONFIG_PATTERN = /^REGISTRY_CONFIG_/;
 
      config = {
+         ...process.env,
         INCLUDE_CONTAINERS_BY_IMAGES: process.env.INCLUDE_CONTAINERS_BY_IMAGES || "", //"^registry\\.example\\.com",
         EXCLUDE_CONTAINERS_BY_IMAGES: process.env.EXCLUDE_CONTAINERS_BY_IMAGES || "^sha256\:", //,
         ...(
