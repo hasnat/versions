@@ -10,7 +10,8 @@ const omitDeep = (collection, excludeKeys) => cloneDeepWith(collection, (value) 
 });
 
 export const getAllGroups = () => {
-    return omitDeep(require(__dirname + '/../../../endpoints.json'), ['']);
+    // TODO: Move omit 'all' to a config
+    return omitDeep(require(__dirname + '/../../../endpoints.json'), ['', 'all']);
 };
 
 export const getEndpointInfo = (Name) => {
