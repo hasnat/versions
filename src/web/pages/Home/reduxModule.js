@@ -6,6 +6,7 @@ import { xor } from "lodash";
 import { createReduxModule } from '../../../redux/reduxModuleComponent';
 import messageToaster from '../../components/messageToaster';
 import {getImageNameWithoutVersion, getImageAvailableTags} from './utils';
+import {DEPLOYMENT_TRIGGER_URI_LATEST_LOG} from '../../../config'
 export const reduxModuleName = 'NodesInfo';
 export const initialState = Immutable({
     hi: 'hi',
@@ -182,7 +183,13 @@ export const transformations = {
             deployed: [state.deploying],
             deploying: false
         },
-        toastSuccess('Deployed' + payload)
+        () => {
+            if (typeof DEPLOYMENT_TRIGGER_URI_LATEST_LOG !== 'undefined' && DEPLOYMENT_TRIGGER_URI_LATEST_LOG !== '') {
+                Object.assign(document.createElement('a'), { target: '_blank', href: DEPLOYMENT_TRIGGER_URI_LATEST_LOG}).click();
+            }
+
+            return toastSuccess('Deploy triggered');
+        }
     ),
     deployError: (state, {payload}) => loop(
         {
