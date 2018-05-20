@@ -186,9 +186,10 @@ export const transformations = {
         (
             (
                 () => {
+                    try {
                     if (typeof CLIENT_CONFIG.DEPLOYMENT_TRIGGER_URI_LATEST_LOG !== 'undefined' && CLIENT_CONFIG.DEPLOYMENT_TRIGGER_URI_LATEST_LOG !== '') {
                     window.open(CLIENT_CONFIG.DEPLOYMENT_TRIGGER_URI_LATEST_LOG, '_blank').focus();
-                    }
+                    } } catch(e) {}
                 }
             )(),
             toastSuccess('Deploy triggered')
