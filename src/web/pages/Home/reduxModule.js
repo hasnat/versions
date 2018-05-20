@@ -185,7 +185,7 @@ export const transformations = {
         },
         () => {
             if (typeof DEPLOYMENT_TRIGGER_URI_LATEST_LOG !== 'undefined' && DEPLOYMENT_TRIGGER_URI_LATEST_LOG !== '') {
-                Object.assign(document.createElement('a'), { target: '_blank', href: DEPLOYMENT_TRIGGER_URI_LATEST_LOG}).click();
+                window.open(DEPLOYMENT_TRIGGER_URI_LATEST_LOG, '_blank').focus();
             }
 
             return toastSuccess('Deploy triggered');
