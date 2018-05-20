@@ -133,7 +133,7 @@ export const transformations = {
     setDeployToParams: (state, {payload: {group, node, containerName, currentImage, newSelectedVersion}}) => (
         {
             ...state,
-            deployTo: {group, node, containerName, currentImage, newSelectedVersion, selectedGroupNodes: Object.keys(state.groups[group])}
+            deployTo: {group, node, containerName, currentImage, newSelectedVersion, selectedGroupNodes: [node]}
         }
     ),
     toggleDeployToNode: (state, {payload}) => (
