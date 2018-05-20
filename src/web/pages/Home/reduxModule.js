@@ -188,7 +188,7 @@ export const transformations = {
                 window.open(DEPLOYMENT_TRIGGER_URI_LATEST_LOG, '_blank').focus();
             }
 
-            return toastSuccess('Deploy triggered');
+            return toastSuccess('Deploy triggered')();
         }
     ),
     deployError: (state, {payload}) => loop(
