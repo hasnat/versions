@@ -3,6 +3,7 @@
  */
 
 import express from 'express';
+import compression from 'compression';
 import helmet from 'helmet';
 import cors from 'cors';
 import config from '../config';
@@ -15,6 +16,7 @@ process.on('unhandledRejection', r => console.log('unhandledRejection', r.messag
 const app = express();
 app.use(helmet());
 app.use(cors());
+app.use(compression());
 app.use(express.json());
 
 app.use((req, res, next) => {
