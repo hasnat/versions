@@ -156,7 +156,7 @@ export const getTagHash = async (image, tag, registry = config.DOCKER_HUB_REGIST
         :
         (
             await request
-            .head(`${registry}/${image}/manifests/${tag}`)
+            .get(`${registry}/${image}/manifests/${tag}`)
             .set('Accept', 'application/vnd.docker.distribution.manifest.v2+json')
         );
 
