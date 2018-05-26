@@ -1,5 +1,5 @@
 import { find, cloneDeepWith } from 'lodash';
-
+import {IGNORE_HOST_GROUPS} from '../../config'
 const omitDeep = (collection, excludeKeys) => cloneDeepWith(collection, (value) => {
 
     if (value && typeof value === 'object') {
@@ -10,8 +10,7 @@ const omitDeep = (collection, excludeKeys) => cloneDeepWith(collection, (value) 
 });
 
 export const getAllGroups = () => {
-    // TODO: Move omit 'all' to a config
-    return omitDeep(require(__dirname + '/../../../endpoints.json'), ['', 'all']);
+    return omitDeep(require(__dirname + '/../../../endpoints.json'), (IGNORE_HOST_GROUPS || '').split(','));
 };
 
 export const getEndpointInfo = (Name) => {
