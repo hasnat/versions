@@ -24,6 +24,7 @@
     "babel-polyfill": "^6.26.0",
     "ben-bradley": "^1.0.2",
     "classnames": "^2.2.5",
+    "compression": "^1.7.2",
     "cors": "^2.8.4",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
