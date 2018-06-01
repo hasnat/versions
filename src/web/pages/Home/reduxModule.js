@@ -5,7 +5,8 @@ import { Intent } from "@blueprintjs/core";
 import { xor } from "lodash";
 import { createReduxModule } from '../../../redux/reduxModuleComponent';
 import messageToaster from '../../components/messageToaster';
-import {getImageNameWithoutVersion, getImageAvailableTags} from './utils';
+import {getImageAvailableTags} from './utils';
+import {getImageNameWithoutVersion} from '../../../utils';
 import {CLIENT_CONFIG} from '../../../config'
 export const reduxModuleName = 'NodesInfo';
 export const initialState = Immutable({

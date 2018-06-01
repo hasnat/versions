@@ -1,4 +1,5 @@
 import {findKey, get} from 'lodash';
+import {getImageNameWithoutVersion} from '../../../utils'
 export const getImageAvailableTags = (images, container) => {
     const imageName = get(container, ['Labels', 'versions.image']) || getImageNameWithoutVersion(container);
     return (images[imageName] || {}).tags || [];
