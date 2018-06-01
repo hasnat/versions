@@ -19,9 +19,9 @@ import {
 import {Tab, Tabs} from "@blueprintjs/core";
 import classNames from 'classnames';
 import {
-    getVersionFromImageName,
+    getImageVersionFromContainer,
     getImageNameWithoutVersion,
-    isVersionLatest,
+    // isVersionLatest,
     getImageAvailableTags,
     isLocalImageSameAsRegistry, showActualImageFromRegistry
 } from './utils';
@@ -72,8 +72,8 @@ const ContainersComponent = (
             <tbody>
             {containers[node].map((container, i) => (<tr key={i}>
                 <td>{head(container.Names)}</td>
-                <td>{container.Image}</td>
-                <td>{container.Image.split(':')[1] || 'latest'}</td>
+                <td>{getImageNameWithoutVersion(container)}</td>
+                <td>{getImageVersionFromContainer(container)}</td>
                 <td>{showActualImageFromRegistry(images, container)}
                     <Tooltip
                         content={
@@ -88,8 +88,8 @@ const ContainersComponent = (
                             icon={isLocalImageSameAsRegistry(images, container) ? 'tick-circle' : 'warning-sign'}
                             intent={isLocalImageSameAsRegistry(images, container) ? Intent.SUCCESS : Intent.WARNING}
                             className="pt-minimal"
-                            loading={loadingImages[getImageNameWithoutVersion(container.Image)]}
-                            onClick={() => loadImages(container.Image)}
+                            loading={loadingImages[getImageNameWithoutVersion(container)]}
+                            onClick={() => loadImages(container)}
                         />
                     </Tooltip>
                 </td>
@@ -102,10 +102,10 @@ const ContainersComponent = (
                                 onChange={(e) => setSelectedImageVersion(group, node, head(container.Names), container.Image, e.target.value)}
                             >
                                 <option value="-">🚀</option>
-                                {Object.keys(getImageAvailableTags(images, container.Image)).map((tag, i) => (
+                                {Object.keys(getImageAvailableTags(images, container)).map((tag, i) => (
                                     <option key={i} value={tag}>
                                         {tag}
-                                        {getVersionFromImageName(container.Image) === tag ? '*' : false}
+                                        {getImageVersionFromContainer(container) === tag ? '*' : false}
                                         {/*{isVersionLatest(images, container.Image, tag) ? ' - latest' : ''}*/}
 
                                     </option>
@@ -115,8 +115,8 @@ const ContainersComponent = (
                         <Button
                             icon="refresh"
                             className="pt-minimal"
-                            loading={loadingImages[getImageNameWithoutVersion(container.Image)]}
-                            onClick={() => loadImages(container.Image)}
+                            loading={loadingImages[getImageNameWithoutVersion(container)]}
+                            onClick={() => loadImages(container)}
                         />
                     </ControlGroup>
 

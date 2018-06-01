@@ -105,7 +105,7 @@ export const transformations = {
         },
         Ef.promise(async () => {
                 try {
-                    const data = await getImageTags(payload);
+                    const data = await getImageTags(image);
                     return thisReduxModule.actions.loadedImage({image, data})
                 } catch (e) {
                     return thisReduxModule.actions.errorImage({image, error: e.message})
