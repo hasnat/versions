@@ -11,12 +11,7 @@ export const getImageAvailableTags = (images, container) => {
 //     }
 //     return imageTags[tag] && imageTags[tag] === imageTags['latest'];
 // };
-export const getImageNameWithoutVersion = (container = '') => {
-    if (typeof container === 'string') {
-        container = {Image: (container)}
-    }
-    return get(container, ['Labels', 'versions.image']) || container.Image.split(':')[0];
-}
+
 export const getImageVersionFromContainer = (container) => {
     return get(container, ['Labels', 'versions.version']) || container.Image.split(':')[1] || 'latest'
 };

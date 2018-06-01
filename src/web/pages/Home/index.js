@@ -20,11 +20,11 @@ import {Tab, Tabs} from "@blueprintjs/core";
 import classNames from 'classnames';
 import {
     getImageVersionFromContainer,
-    getImageNameWithoutVersion,
     // isVersionLatest,
     getImageAvailableTags,
     isLocalImageSameAsRegistry, showActualImageFromRegistry
 } from './utils';
+import {getImageNameWithoutVersion} from "../../../utils";
 import config from '../../../config';
 
 import {ControlGroup, Navbar, NavbarGroup, NavbarHeading, NavbarDivider, Alignment} from "@blueprintjs/core";

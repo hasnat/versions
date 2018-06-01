@@ -1,6 +1,7 @@
 const { spawnSync } = require( 'child_process' );
 import spawnAsync from '@exponent/spawn-async';
-import {logger} from "../../utils";
+import {getImageNameWithoutVersion} from "../../utils";
+
 import {drop, last, take, find, head} from "lodash";
 import config from '../../config'
 import request from 'superagent';
@@ -49,9 +50,9 @@ export const getAllImagesInfoOnEndpoint = async (endpoint) => {
         const containers = JSON.parse(stdout);
         return containers
             .filter(container => (new RegExp(config.INCLUDE_CONTAINERS_BY_IMAGES))
-                .test(container.Image))
+                .test(getImageNameWithoutVersion(container)))
             .filter(container => config.EXCLUDE_CONTAINERS_BY_IMAGES !== '' && !(new RegExp(config.EXCLUDE_CONTAINERS_BY_IMAGES))
-                .test(container.Image));
+                .test(getImageNameWithoutVersion(container)));
 
 };
 

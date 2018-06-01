@@ -1,3 +1,5 @@
+import {get} from "lodash";
+
 export const isDevEnv = () => process && process.env.NODE_ENV !== 'production';
 export const isProductionEnv = () => !isDevEnv();
 
@@ -21,4 +23,10 @@ export const logger = {
     }
 
 
+}
+export const getImageNameWithoutVersion = (container = '') => {
+    if (typeof container === 'string') {
+        container = {Image: (container)}
+    }
+    return get(container, ['Labels', 'versions.image']) || container.Image.split(':')[0];
 }
