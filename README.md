@@ -6,6 +6,9 @@ interface to manage your docker-compose container releases
 
 
 # Develop
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/hasnat/versions.svg)](https://greenkeeper.io/)
+
 ```
 npm install
 npm run develop
